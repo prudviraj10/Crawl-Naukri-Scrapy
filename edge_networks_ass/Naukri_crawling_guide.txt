@@ -1,0 +1,32 @@
+Setup Instructions:
+1. Installed scrapy 1.2.1 for crawling.
+2. Installed pymongo and mongod for storing the records crawled
+
+Crawler Architecture:
+1. Items:
+    Created 2 items to store job categories and jobs info respectively.
+
+2. Settings
+    Changed ROBOTSTXT_OBEY to allow crawling of Naukri site
+    Changed DOWNLOAD_DELAY to send requests at amoderate speed.
+    Enabled a custom SPIDER_MIDDLEWARES to store broken links
+    Enabled ITEM_PIPELINES to store items crawled in MongoDB
+    Enabled LOG_FILE to store log records (depending on LOG_LEVEL) to monitor the crawler.
+
+3. Pipelines
+    Created a pipeline to store records in MongoDB - localhost:27017
+    Created 2 collections one to store job categories and the other to store all the jobs information
+
+4. Spider Architecture
+    Spider initializes logging to log all the WARNINGS and ERRORS
+    Starts at the start_urls which is given to me
+    Calls Parse which gives tile and link of a jobCategory
+    The jobCategory and count (for depth of crawling calculation) are stored in meta to pass onto callback functions
+    A request is made to the jobCategoryLink and callback goes to parse_jobs function
+    It crawls all the jobs info going through all the pages with the jobCategory info along with it.
+    And also count is updated as depth which can be used to stop the spider when top n jobs are crawled.
+
+*** The crawler can be made endpoint using depth information while crawling
+*** Pagination is built into the crawler
+*** Broken links error is handled by custom middlware function and also stores the links
+*** Warnings and errors are logged to monitor the crawler and delay was added to send requests to the page at a moderate speed
